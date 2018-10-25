@@ -1,0 +1,2 @@
+/panfs/pfs.local/scratch/sjmac/b961k922/kinbre/b017_macdonald/data/parental_lines/raw/Db3852_R1_sanger.fq.gz
+/panfs/pfs.local/scratch/sjmac/b961k922/kinbre/b017_macdonald/data/parental_lines/raw/Dsam_R1_sanger.fq.gz

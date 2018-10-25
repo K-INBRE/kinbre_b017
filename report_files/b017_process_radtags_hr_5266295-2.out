@@ -1,0 +1,12 @@
+Sourcing the config file
+Current file: Plate02
+*** Separate the relevant barcodes ***
+*** Processing radtags for plate Plate02... 
+Processing single-end data.
+Using Phred+33 encoding for quality scores.
+Found 2 input file(s).
+Searching for single-end, inlined barcodes.
+Loaded 96 barcodes (6bp).
+Will attempt to recover barcodes with at most 1 mismatches.
+Processing file 1 of 2 [S3HR_Plate02_CGATGT_L005_R1_001.fastq.gz]
+  Processing RAD-Tags...1M...2M...3M...4M...5M...6M...7M...8M...9M...10M...11M...12M...13M...14M...15M...16M...17M...18M...19M...20M...21M...22M...23M...24M...25M...

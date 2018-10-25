@@ -1,0 +1,21 @@
+Sourcing the config file
+Current file: p10
+*** Separate the relevant barcodes ***
+*** Processing radtags for plate p10... 
+Processing single-end data.
+Using Phred+33 encoding for quality scores.
+Found 1 input file(s).
+Searching for single-end, inlined barcodes.
+Loaded 96 barcodes (6bp).
+Will attempt to recover barcodes with at most 1 mismatches.
+Processing file 1 of 1 [Sam3852_F18_p10_TAGCTT_L008_R1_001.fastq.gz]
+  Processing RAD-Tags...1M...2M...3M...4M...5M...6M...7M...8M...9M...10M...11M...12M...13M...14M...15M...16M...17M...18M...19M...20M...21M...22M...
+  22066135 total reads; -454279 ambiguous barcodes; -229008 ambiguous RAD-Tags; +744071 recovered; -282328 low quality reads; 21100520 retained reads.
+Closing files, flushing buffers...
+Outputing details to log: '/panfs/pfs.local/scratch/sjmac/b961k922/kinbre/b017_macdonald/data/intercross_f18/raw/Sample_Sam3852_F18_p10/process_radtags.Sample_Sam3852_F18_p10.log'
+
+22066135 total sequences
+  454279 ambiguous barcode drops (2.1%)
+  282328 low quality read drops (1.3%)
+  229008 ambiguous RAD-Tag drops (1.0%)
+21100520 retained reads (95.6%)
