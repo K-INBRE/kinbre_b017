@@ -1,6 +1,6 @@
 #!/bin/bash
 #MSUB -l nodes=1:ppn=8,mem=60g,walltime=02:00:00
-#MSUB -o /home/b961k922/scratch/kinbre/b017_macdonald/report_files/b017_aln_$(JOBID)-${MOAB_JOBARRAYINDEX}.out
+#MSUB -o /home/b961k922/scratch/kinbre/b017_macdonald/report_files/aln/b017_aln_$(JOBID)-${MOAB_JOBARRAYINDEX}.out
 #MSUB -l walltime=6:00:00
 #MSUB -q sixhour
 #MSUB -j oe
@@ -18,7 +18,7 @@ echo "Current file: ${SEQ_FILE_PATH}"
 parent=$(basename ${SEQ_FILE_PATH} _R1_sanger.fq.gz)
 echo "File prefix: ${parent}"
 
-NTHREADS=8
+N_THREADS=8
 
 activate_conda_environment () {
   ENVNAME=${1}_${2}
@@ -58,7 +58,7 @@ if [[ ! -f "${PARENTAL_DATA_FILT}/${parent}_R1.filt.fq.gz" ]]; then
         -o ${PARENTAL_DATA_FILT}/${parent}_R1.filt.fq.gz -O ${PARENTAL_DATA_FILT}/${parent}_R2.filt.fq.gz \
         -h ${REPORTS_DIR}/${parent}.fastp.report.html \
         -j ${REPORTS_DIR}/${parent}.fastp.report.json \
-        -w ${NTHREADS} \
+        -w ${N_THREADS} \
         --dont_overwrite \
         --cut_by_quality3 \
         --cut_window_size 5 \
@@ -80,15 +80,11 @@ if [[ ! -f "${PARENTS_ALN_DIR}/${parent}.aln.sam" ]]; then
   echo "Starting alignment"
   activate_conda_environment ${PROJECT} bwa
 
-  bwa aln -t ${NTHREADS} ${REF_GENOME} ${PARENTAL_DATA_FILT}/${parent}_R1.filt.fq.gz > ${PARENTS_ALN_DIR}/${parent}_R1.sai || { echo "bwa aln R1 failed" ; exit 1; }
-  bwa aln -t ${NTHREADS} ${REF_GENOME} ${PARENTAL_DATA_FILT}/${parent}_R2.filt.fq.gz > ${PARENTS_ALN_DIR}/${parent}_R2.sai || { echo "bwa aln R2 failed" ; exit 1; }
-
-  bwa sampe -r "@RG\tID:${parent}\tSM:${parent}\tLB:lib1" \
-            ${REF_GENOME} \
-            ${PARENTS_ALN_DIR}/${parent}_R1.sai \
-            ${PARENTS_ALN_DIR}/${parent}_R1.sai \
-            ${PARENTAL_DATA_FILT}/${parent}_R1.filt.fq.gz \
-            ${PARENTAL_DATA_FILT}/${parent}_R2.filt.fq.gz > ${PARENTS_ALN_DIR}/${parent}.aln.sam || { echo "bwa sampe failed" ; exit 1; }
+  bwa mem -t ${N_THREADS} ${REF_GENOME} \
+          -R "@RG\tID:${parent}\tSM:${parent}\tLB:lib1" \
+          -o ${PARENTS_ALN_DIR}/${parent}.aln.sam \
+          ${PARENTAL_DATA_FILT}/${parent}_R1.filt.fq.gz \
+          ${PARENTAL_DATA_FILT}/${parent}_R2.filt.fq.gz
   source deactivate
 fi
 
@@ -98,9 +94,10 @@ if [[ ! -f "${PARENTS_ALN_DIR}/${parent}.sorted.bam" ]]; then
   echo "Starting SAM conversation"
   activate_conda_environment ${PROJECT} samtools
   samtools fixmate -O bam ${PARENTS_ALN_DIR}/${parent}.aln.sam \
-           ${PARENTS_ALN_DIR}/${parent}.aln.bam || { echo "samtools fixmate" failed ; exit 1; }
+                   -@ $(( ${N_THREADS} - 1 )) \
+                   ${PARENTS_ALN_DIR}/${parent}.aln.bam || { echo "samtools fixmate" failed ; exit 1; }
 
-  samtools sort -t ${NTHREADS} \
+  samtools sort -t ${N_THREADS} \
                 -O bam -o ${PARENTS_ALN_DIR}/${parent}.sorted.bam \
                 -T ${MOAB_JOBARRAYINDEX}_tmp_ ${PARENTS_ALN_DIR}/${parent}.aln.bam || { echo "samtools sort failed" ; exit 1; }
 
