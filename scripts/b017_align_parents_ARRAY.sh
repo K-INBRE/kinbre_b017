@@ -99,6 +99,7 @@ if [[ ! -f "${PARENTS_ALN_DIR}/${parent}.sorted.bam" ]]; then
   activate_conda_environment ${PROJECT} samtools
   samtools fixmate -O bam ${PARENTS_ALN_DIR}/${parent}.aln.sam \
            ${PARENTS_ALN_DIR}/${parent}.aln.bam || { echo "samtools fixmate" failed ; exit 1; }
+
   samtools sort -t ${NTHREADS} \
                 -O bam -o ${PARENTS_ALN_DIR}/${parent}.sorted.bam \
                 -T ${MOAB_JOBARRAYINDEX}_tmp_ ${PARENTS_ALN_DIR}/${parent}.aln.bam || { echo "samtools sort failed" ; exit 1; }
